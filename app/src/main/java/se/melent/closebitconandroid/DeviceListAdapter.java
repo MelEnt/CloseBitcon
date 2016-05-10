@@ -1,6 +1,5 @@
 package se.melent.closebitconandroid;
 
-import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +16,7 @@ import java.util.List;
 /**
  * Created by MelEnt on 2016-05-05.
  */
+@Deprecated
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.DeviceRow>
 {
     private final Context context;
@@ -57,7 +57,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.De
 
     public static final class DeviceRow extends RecyclerView.ViewHolder implements View.OnClickListener
     {
-        private final TextView deviceName;
+        private final TextView deviceAddress;
         private final TextView deviceUUID;
         private final TextView deviceRssi;
         private Context context;
@@ -66,7 +66,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.De
         public DeviceRow(View view)
         {
             super(view);
-            this.deviceName = (TextView) view.findViewById(R.id.device_name);
+            this.deviceAddress = (TextView) view.findViewById(R.id.device_address);
             this.deviceUUID = (TextView) view.findViewById(R.id.device_uuid);
             this.deviceRssi = (TextView) view.findViewById(R.id.device_rssi);
             view.setOnClickListener(this);
@@ -76,9 +76,9 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.De
         {
             this.context = context;
             this.bcInfo = bcInfo;
-            deviceName.setText(bcInfo.getDevice().getName());
+            deviceAddress.setText(bcInfo.getDevice().getAddress());
             deviceUUID.setText(StringUtils.join(bcInfo.getDevice().getUuids(), ", "));
-            deviceRssi.setText(bcInfo.getRssi());
+            deviceRssi.setText(String.valueOf(bcInfo.getRssi()));
         }
 
         @Override

@@ -3,4 +3,6 @@
     <string name="ble_not_supported">Bluetooth LE not supported!</string>
     <string name="welcome_text">Welcome you have BT enabled</string>
     <string name="button_text">Start Scan</string>
+    <string name="first_input">First Input</string>
+    <string name="enter_auth_below">Auth String:</string>
 </resources>

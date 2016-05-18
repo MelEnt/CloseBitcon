@@ -5,4 +5,6 @@
     <string name="button_text">Start Scan</string>
     <string name="first_input">First Input</string>
     <string name="enter_auth_below">Auth String:</string>
+    <string name="main_beacon_authcode">whnmoX2N2JSx</string>
+    <string name="main_beacon_macaddress">TOBEFILLED</string>
 </resources>

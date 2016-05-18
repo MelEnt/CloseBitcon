@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.BeaconFormActivity"></activity>
+        <activity android:name=".activity.AuthUserActivity"></activity>
     </application>
 
 </manifest>

@@ -1,39 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".activity.BeaconFormActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                tools:context=".activity.AuthUserActivity">
 <LinearLayout
-    android:id="@+id/form_layout"
+    android:id="@+id/auth_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/enter_auth_below"/>
     <EditText
-        android:id="@+id/auth_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/first_input"
-        android:text="whnmoX2N2JSx"
+        android:text="@string/main_beacon_authcode"
         android:maxLength="12" />
-    </LinearLayout>
+</LinearLayout>
+<LinearLayout
+    android:id="@+id/mac_address"
+    android:layout_below="@id/auth_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MAC-address:"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/main_beacon_macaddress"/>
+</LinearLayout>
+<LinearLayout
+    android:id="@+id/admin_nbrs"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/mac_address"
+    android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Admin Key"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AnyNumber"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mobile Key"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AnyNumber"/>
+
+</LinearLayout>
+
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@id/form_layout">
+    android:layout_below="@id/admin_nbrs">
     <Button
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:text="Send"
-        android:onClick="submit"/>
-
-    </LinearLayout>
+        android:onClick="submitForm"/>
+</LinearLayout>
 
 </RelativeLayout>

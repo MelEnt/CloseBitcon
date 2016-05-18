@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements BluetoothAdapter.
                             @Override
                             public void onClick(View view)
                             {
-                                Intent intent = new Intent(MainActivity.this, BeaconFormActivity.class);
+                                Intent intent = new Intent(MainActivity.this, AuthUserActivity.class);
                                 intent.putExtra("BEACON", device);
                                 startActivity(intent);
                                 if (scanToggle.isChecked())

@@ -1,4 +1,4 @@
-package se.melent.closebitconandroid.model;
+package se.melent.closebitconandroid.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Parcel;
@@ -14,12 +14,27 @@ public class BluetoothConnectionInfo implements Parcelable
     private byte[] bytes;
     private String address;
 
-    public BluetoothConnectionInfo(BluetoothDevice device, int rssi, byte[] bytes)
+    private int maxPing;
+    private int ping;;
+
+    public BluetoothConnectionInfo(BluetoothDevice device, int rssi, byte[] bytes, int maxPing)
     {
         this.device = device;
+        ping(rssi, bytes);
+        address = device.getAddress();
+    }
+
+    public void ping(int rssi, byte[] bytes)
+    {
         this.rssi = rssi;
         this.bytes = bytes;
-        address = device.getAddress();
+        ping = maxPing;
+    }
+
+    public boolean pingDeadCheck()
+    {
+        ping--;
+        return (ping <= 0);
     }
 
     protected BluetoothConnectionInfo(Parcel in) {
@@ -64,6 +79,11 @@ public class BluetoothConnectionInfo implements Parcelable
 
     public byte[] getBytes() {
         return bytes;
+    }
+
+    public String getAddress()
+    {
+        return address;
     }
 
     @Override

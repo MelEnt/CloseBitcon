@@ -35,10 +35,6 @@ public class BluetoothMaster
 
 	private ScanCallbackClass scanCallbackClass = new ScanCallbackClass();
 
-	private BluetoothMaster()
-	{
-	}
-
 	public BluetoothMaster(Context context)
 	{
 		this.context = context;

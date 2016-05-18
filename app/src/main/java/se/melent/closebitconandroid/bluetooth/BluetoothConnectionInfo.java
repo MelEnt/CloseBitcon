@@ -20,6 +20,7 @@ public class BluetoothConnectionInfo implements Parcelable
     public BluetoothConnectionInfo(BluetoothDevice device, int rssi, byte[] bytes, int maxPing)
     {
         this.device = device;
+        this.maxPing = maxPing;
         ping(rssi, bytes);
         address = device.getAddress();
     }

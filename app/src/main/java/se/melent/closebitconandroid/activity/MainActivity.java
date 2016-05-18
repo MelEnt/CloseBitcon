@@ -35,14 +35,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        Log.d(TAG, "onCreate called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         scanToggle = (Switch) findViewById(R.id.scanToggle);
         linearLayout = (LinearLayout) findViewById(R.id.devices_scoll_view);
 
+        // PREPARE BLUETOOTH //
         bluetoothMaster = new BluetoothMaster(this);
-
         if (bluetoothMaster.bluetoothSupported() == false)
         {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
@@ -52,11 +51,9 @@ public class MainActivity extends AppCompatActivity
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-
         Toast.makeText(this, R.string.welcome_text, Toast.LENGTH_SHORT).show();
 
-        showSwitch();
-
+        // SET CALLBACK FOR BLUEETOTH //
         bluetoothMaster.addChangeListener(new OnConnectionsChanged()
         {
             @Override
@@ -81,6 +78,16 @@ public class MainActivity extends AppCompatActivity
                 });
             }
         });
+
+        // PREPARE SWITCH VIEW //
+        scanToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
+            {
+                scanDevice(isChecked);
+            }
+        });
     }
 
     private void createDeviceRow(LayoutInflater inflater, final BluetoothConnectionInfo device)
@@ -103,18 +110,6 @@ public class MainActivity extends AppCompatActivity
         ((TextView) view.findViewById(R.id.device_address)).setText(device.getDevice().getAddress());
         ((TextView) view.findViewById(R.id.device_rssi)).setText(String.valueOf(device.getRssi()));
         linearLayout.addView(view);
-    }
-
-    private void showSwitch()
-    {
-        scanToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
-            {
-                scanDevice(isChecked);
-            }
-        });
     }
 
     public void scanDevice(final boolean enable)

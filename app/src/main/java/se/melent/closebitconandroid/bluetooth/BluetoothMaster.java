@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -46,16 +47,28 @@ public class BluetoothMaster
 
 	// STATUS METHODS //
 
+	/**
+	 * Checks if bluetooth is supported on this device
+	 * @return true if supported
+	 */
 	public boolean bluetoothSupported()
 	{
 		return bluetoothSupported;
 	}
 
+	/**
+	 * checks if this bluetooth is currently scanning for beacons and/or other devices
+	 * @return true when scanning is currently active
+	 */
 	public boolean isEnabled()
 	{
 		return bluetoothAdapter.isEnabled();
 	}
 
+	/**
+	 * tells the android to start/stop scanning for beacons and/or other devices
+	 * @param enable true to start, false to stop
+	 */
 	public void enable(boolean enable)
 	{
 		if (enable)
@@ -69,13 +82,21 @@ public class BluetoothMaster
 
 	// GETTERS //
 
+	/**
+	 * returns a list of nearby devices, this list WILL be immutable as it is a direct reference to the list used internally by this class
+	 * @return the list of nearby devices
+	 */
 	public List<BluetoothConnectionInfo> getBluetoothConnections()
 	{
-		return devices;
+		return Collections.unmodifiableList(devices);
 	}
 
 	// PING RELATED //
 
+	/**
+	 * toggles if the ping service in this class will be active
+	 * @param state true will make any inactive connections get removed, false will make any connection stay indefinetly
+	 */
 	public void togglePingService(boolean state)
 	{
 		pingTimer.purge();
@@ -92,7 +113,13 @@ public class BluetoothMaster
 		}
 	}
 
-	public void pingCheckAll()
+	/**
+	 * used internally to trigger all ping checks on all in memory connections available to bluetooth devices
+	 * this will cause devices that arent nearby to get removed
+	 *
+	 * any changes (such as deletion of a timed out connection) will trigger the on change listeners
+	 */
+	private void pingCheckAll()
 	{
 		boolean changeOccured = false;
 		synchronized (devices)
@@ -115,16 +142,24 @@ public class BluetoothMaster
 
 	// CALLBACKS //
 
+	/**
+	 * adds a new OnConnectionsChanged listener to this class, the implementation will be callbacked whenever bluetooth detects a new beacon or device or when a bluetooth device is removed for having a timeout (ping)
+	 * @param occ a implementation of OnConnectionsChanged
+	 */
 	public void addChangeListener(OnConnectionsChanged occ)
 	{
 		onChangeListeners.add(occ);
 	}
 
+	/**
+	 * internal method to activate all the listeners from the outside
+	 */
 	private void triggerListeners()
 	{
+		List<BluetoothConnectionInfo> immutableDevicesList = getBluetoothConnections();
 		for (OnConnectionsChanged occ : onChangeListeners)
 		{
-			occ.changed(getBluetoothConnections());
+			occ.changed(immutableDevicesList);
 		}
 	}
 
@@ -147,7 +182,7 @@ public class BluetoothMaster
 		@Override
 		public void onLeScan(BluetoothDevice device, int rssi, byte[] bytes)
 		{
-			BluetoothConnectionInfo bci = new BluetoothConnectionInfo(device, rssi, bytes, 3);
+			BluetoothConnectionInfo bci = new BluetoothConnectionInfo(device, rssi, bytes);
 			synchronized (devices)
 			{
 				BluetoothConnectionInfo active_bci = getConnection(device.getAddress());

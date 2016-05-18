@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="se.melent.closebitconandroid.BeaconFormActivity">
+    tools:context=".activity.BeaconFormActivity">
 <LinearLayout
     android:id="@+id/form_layout"
     android:layout_width="match_parent"

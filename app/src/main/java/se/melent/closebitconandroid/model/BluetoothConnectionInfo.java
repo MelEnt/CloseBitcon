@@ -1,6 +1,5 @@
-package se.melent.closebitconandroid;
+package se.melent.closebitconandroid.model;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -68,18 +67,20 @@ public class BluetoothConnectionInfo implements Parcelable
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         BluetoothConnectionInfo that = (BluetoothConnectionInfo) o;
 
-        return address != null ? address.equals(that.address) : that.address == null;
+        return address.equals(that.address);
 
     }
 
     @Override
-    public int hashCode() {
-        return address != null ? address.hashCode() : 0;
+    public int hashCode()
+    {
+        return address.hashCode();
     }
 }

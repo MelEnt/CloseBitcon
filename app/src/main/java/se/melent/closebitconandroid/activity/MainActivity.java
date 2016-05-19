@@ -23,6 +23,8 @@ import se.melent.closebitconandroid.bluetooth.BluetoothMaster;
 import se.melent.closebitconandroid.R;
 import se.melent.closebitconandroid.bluetooth.BluetoothConnectionInfo;
 import se.melent.closebitconandroid.bluetooth.OnConnectionsChanged;
+import se.melent.closebitconandroid.extra.AutoLog;
+import se.melent.closebitconandroid.extra.Toasters;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -42,13 +44,17 @@ public class MainActivity extends AppCompatActivity
         scanToggle = (Switch) findViewById(R.id.scanToggle);
         linearLayout = (LinearLayout) findViewById(R.id.devices_scoll_view);
 
+        AutoLog.introduce();
+        Toasters.setContext(this);
+
         // PREPARE BLUETOOTH //
         bluetoothMaster = new BluetoothMaster(this);
         if (bluetoothMaster.bluetoothSupported() == false)
         {
+            AutoLog.warn("This device does not support Bluetooth LE");
             scanToggle.setText("Bluetooth unavailable");
             scanToggle.setClickable(false);
-            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_LONG).show();
+            Toasters.show(R.string.ble_not_supported);
             return;
         }
         if (bluetoothMaster.isEnabled() == false) // what is this code for?
@@ -57,7 +63,7 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             return;
         }
-        Toast.makeText(this, R.string.welcome_text, Toast.LENGTH_LONG).show();
+        Toasters.show(R.string.welcome_text);
 
         // SET CALLBACK FOR BLUEETOTH //
         bluetoothMaster.addChangeListener(new OnConnectionsChanged()

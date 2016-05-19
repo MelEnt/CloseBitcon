@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import se.melent.closebitconandroid.extra.AutoLog;
+
 /**
  * Created by EnderCrypt on 18/05/16.
  */
@@ -73,9 +75,11 @@ public class BluetoothMaster
 	{
 		if (enable)
 		{
+			AutoLog.info("Bluetooth scanning was enabled");
 			bluetoothAdapter.startLeScan(scanCallbackClass);
 		} else
 		{
+			AutoLog.info("Bluetooth scanning was disabled");
 			bluetoothAdapter.stopLeScan(scanCallbackClass);
 		}
 	}
@@ -121,7 +125,7 @@ public class BluetoothMaster
 	 */
 	private void pingCheckAll()
 	{
-		boolean changeOccured = false;
+		int devicesRemoved = 0;
 		synchronized (devices)
 		{
 			Iterator<BluetoothConnectionInfo> iter = devices.iterator();
@@ -131,11 +135,13 @@ public class BluetoothMaster
 				if (bci.pingDeadCheck())
 				{ // PING TIMEOUT
 					iter.remove();
+					devicesRemoved++;
 				}
 			}
 		}
-		if (changeOccured)
+		if (devicesRemoved > 0)
 		{
+			AutoLog.info(devicesRemoved+" device connections timed out by ping");
 			triggerListeners();
 		}
 	}
@@ -188,7 +194,7 @@ public class BluetoothMaster
 				BluetoothConnectionInfo active_bci = getConnection(device.getAddress());
 				if (active_bci == null)
 				{
-					Log.d(TAG, "Found new device: " + bci.getAddress());
+					AutoLog.info("Found new device: " + bci.getAddress());
 					devices.add(bci);
 					triggerListeners();
 				}

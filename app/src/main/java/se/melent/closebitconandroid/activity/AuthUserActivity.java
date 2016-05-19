@@ -34,10 +34,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import se.melent.closebitconandroid.R;
+import se.melent.closebitconandroid.extra.AutoLog;
+import se.melent.closebitconandroid.extra.Toasters;
 
 public class AuthUserActivity extends AppCompatActivity {
 
-    private static final String TAG = AuthUserActivity.class.getSimpleName();
     private EditText editText;
     private String publicKey;
     private byte[] finalKey;
@@ -47,6 +48,7 @@ public class AuthUserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_user);
+        Toasters.setContext(this);
     }
 
     public void submit(View view) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
@@ -78,8 +80,8 @@ public class AuthUserActivity extends AppCompatActivity {
         insertArray(requestToken, authCodeBytes, 4);
         insertArray(requestToken, saltBytes, 16);
 
-        Log.d("AuthReq", Arrays.toString(requestToken));
-        Log.d("PublicKey", Arrays.toString(publicKey.getBytes()));
+        AutoLog.debug("AuthReq: " + Arrays.toString(requestToken));
+        AutoLog.debug("PublicKey: " + Arrays.toString(publicKey.getBytes()));
 
         final Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, generatePublicKey(publicKey));
@@ -87,8 +89,8 @@ public class AuthUserActivity extends AppCompatActivity {
 
         final String cipherText = URLEncoder.encode(Base64.encodeToString(finalKey, Base64.DEFAULT), "UTF-8");
 
-        Log.d(TAG, "publicKey: " + publicKey);
-        Log.d("KeyToSend", Arrays.toString(finalKey));
+        AutoLog.debug("publicKey: " + publicKey);
+        AutoLog.debug("KeyToSend: " + Arrays.toString(finalKey));
 
         new Thread(new Runnable() {
             @Override
@@ -96,7 +98,7 @@ public class AuthUserActivity extends AppCompatActivity {
             {
                 Connection connection = Jsoup.connect("http://smartsensor.io/CBtest/auth_user.php");
                 connection.data("enc", cipherText);
-                Log.d(TAG, "Final key to send as String: " + cipherText);
+                AutoLog.debug("Final key to send as String: " + cipherText);
                 Document result = null;
                 try
                 {
@@ -104,11 +106,11 @@ public class AuthUserActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                Log.d(TAG, result.toString());
+                AutoLog.debug(result.toString());
 
                 if(result.body().text().equals("ERROR"))
                 {
-                    Toast.makeText(getApplicationContext(), "Failed to auth user!", Toast.LENGTH_SHORT).show();
+                    Toasters.show("Failed to auth user!");
                     return;
                 }
 

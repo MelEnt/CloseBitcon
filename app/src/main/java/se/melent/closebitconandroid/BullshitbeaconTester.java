@@ -22,6 +22,8 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import se.melent.closebitconandroid.extra.AutoLog;
+
 /**
  * Created by MelEnt on 2016-05-18.
  */
@@ -73,8 +75,8 @@ public class BullshitbeaconTester
         insertArray(requestToken, authCodeBytes, 4);
         insertArray(requestToken, saltBytes, 16);
 
-        Log.d("AuthReq", Arrays.toString(requestToken));
-        Log.d("PublicKey", Arrays.toString(publicKey.getBytes()));
+        AutoLog.debug("AuthReq: "+ Arrays.toString(requestToken));
+        AutoLog.debug("PublicKey; " + Arrays.toString(publicKey.getBytes()));
 
         final Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, generatePublicKey(publicKey));

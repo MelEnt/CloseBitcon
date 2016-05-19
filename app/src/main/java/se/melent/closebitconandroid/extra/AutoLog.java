@@ -55,11 +55,23 @@ public class AutoLog
 	private static void print(int level, String message)
 	{
 		StackTraceElement ste = getStackTrace();
-		String info = "("+getTimeElapsed()+" sec) " + ste.getClassName()+" (Method: "+ste.getMethodName()+") Line: "+ste.getLineNumber();
+
+		String fullName = ste.getClassName();
+		String packageName = fullName.substring(0,fullName.lastIndexOf('.'));
+		String className = fullName.substring(fullName.lastIndexOf('.')+1);
+		String methodName = ste.getMethodName();
+
+		message = message.replace("(QUALIFIED)",fullName);
+		message = message.replace("(PACKAGE)",packageName);
+		message = message.replace("(CLASS)",className);
+		message = message.replace("(METHOD)",methodName);
+
+		String info = "("+getTimeElapsed()+" sec) " + fullName+" (Method: "+methodName+") Line: "+ste.getLineNumber();
+
 		Log.println(level, AutoLog.class.getSimpleName(), info+'\n'+message);
 	}
 
-	public static StackTraceElement getStackTrace()
+	private static StackTraceElement getStackTrace()
 	{
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		StackTraceElement caller = stack[5];

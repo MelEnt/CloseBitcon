@@ -23,6 +23,7 @@ import se.melent.closebitconandroid.bluetooth.BluetoothMaster;
 import se.melent.closebitconandroid.R;
 import se.melent.closebitconandroid.bluetooth.BluetoothConnectionInfo;
 import se.melent.closebitconandroid.bluetooth.OnConnectionsChanged;
+import se.melent.closebitconandroid.bubbles.BubbleScreen;
 import se.melent.closebitconandroid.extra.AutoLog;
 import se.melent.closebitconandroid.extra.Toasters;
 
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = MainActivity.class.getSimpleName();
     private Switch scanToggle;
     private LinearLayout linearLayout;
+    private BubbleScreen bubbleScreen;
 
     private BluetoothMaster bluetoothMaster;
 
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         scanToggle = (Switch) findViewById(R.id.scanToggle);
         linearLayout = (LinearLayout) findViewById(R.id.devices_scoll_view);
+        bubbleScreen = (BubbleScreen) findViewById(R.id.main_bubble_screen);
 
         AutoLog.introduce();
         Toasters.setContext(this);
@@ -129,6 +132,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onResume();
         bluetoothMaster.togglePingService(true);
+        bubbleScreen.setUpdatingState(true);
     }
 
     @Override
@@ -136,5 +140,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onPause();
         bluetoothMaster.togglePingService(false);
+        bubbleScreen.setUpdatingState(false);
     }
 }

@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import se.melent.closebitconandroid.extra.AutoLog;
+
 /**
  * Created by EnderCrypt on 19/05/16.
  */
@@ -58,6 +60,25 @@ public class BubbleScreen extends View
 	{
 		super.onWindowFocusChanged(hasWindowFocus);
 		screenSize = new Rect(0,0,getWidth(),getHeight());
+		scheduleUpdateTimer();
+	}
+
+	public void setUpdatingState(boolean enable)
+	{
+		timer.purge();
+		if (enable)
+		{
+			AutoLog.debug("bubble screen drawing {ENABLED}");
+			scheduleUpdateTimer();
+		}
+		else
+		{
+			AutoLog.debug("bubble screen drawing {DISABLED}");
+		}
+	}
+
+	private void scheduleUpdateTimer()
+	{
 		timer.schedule(new TimerTask()
 		{
 			@Override
@@ -67,13 +88,6 @@ public class BubbleScreen extends View
 				postInvalidate();
 			}
 		},0,50);
-	}
-
-	@Override
-	protected void onDetachedFromWindow()
-	{
-		super.onDetachedFromWindow();
-		timer.cancel();
 	}
 
 	public void update()

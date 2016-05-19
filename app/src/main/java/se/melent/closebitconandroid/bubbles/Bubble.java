@@ -99,14 +99,17 @@ public class Bubble
 	public void updateMovement()
 	{
 		// hit left wall
-		if (position.x < (squareSize / 2))
+		double radius = (squareSize / 2);
+		if (position.x < radius)
 		{
-			vector.motion.x = Math.abs(vector.motion.x);
+			double into = (position.x + radius);
+			vector.motion.x += into/16;
 		}
 		// hit right wall
-		if (position.x > screenSize.width() - (squareSize / 2))
+		if (position.x > screenSize.width() - radius)
 		{
-			vector.motion.x = -Math.abs(vector.motion.x);
+			double into = (position.x + radius) - screenSize.width();
+			vector.motion.x -= into/16;
 		}
 		// move
 		vector.motion.y -= (size / 3000);

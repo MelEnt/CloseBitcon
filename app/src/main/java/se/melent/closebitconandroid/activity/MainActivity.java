@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+import se.melent.closebitconandroid.bluetooth.bci_sorters.Order;
 import se.melent.closebitconandroid.bluetooth.bci_sorters.RssiComparator;
 import se.melent.closebitconandroid.bluetooth.BluetoothMaster;
 import se.melent.closebitconandroid.R;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity
                         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         synchronized (devices)
                         {
-                            Collections.sort(devices, new RssiComparator(true));
+                            Collections.sort(devices, new RssiComparator(Order.ASCENDING));
                             for (BluetoothConnectionInfo device : devices)
                             {
                                 createDeviceRow(inflater, device);

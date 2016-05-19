@@ -9,18 +9,18 @@ import se.melent.closebitconandroid.bluetooth.BluetoothConnectionInfo;
  */
 public abstract class AbstrComparator implements Comparator<BluetoothConnectionInfo>
 {
-	private boolean ascending;
+	private Order order;
 
-	public AbstrComparator(boolean ascending)
+	public AbstrComparator(Order order)
 	{
-		this.ascending = ascending;
+		this.order = order;
 	}
 
 	@Override
 	public final int compare(BluetoothConnectionInfo bci_1, BluetoothConnectionInfo bci_2)
 	{
 		int value = compareConnections(bci_1, bci_2);
-		if (ascending == false)
+		if (order == Order.DESCENDING)
 		{
 			value = -value;
 		}

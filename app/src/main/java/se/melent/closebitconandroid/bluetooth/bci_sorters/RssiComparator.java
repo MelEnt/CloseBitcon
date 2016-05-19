@@ -7,9 +7,9 @@ import se.melent.closebitconandroid.bluetooth.BluetoothConnectionInfo;
  */
 public class RssiComparator extends AbstrComparator
 {
-	public RssiComparator(boolean ascending)
+	public RssiComparator(Order order)
 	{
-		super(ascending);
+		super(order);
 	}
 
 	@Override

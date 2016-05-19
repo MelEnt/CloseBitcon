@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         scanToggle = (Switch) findViewById(R.id.scanToggle);
         linearLayout = (LinearLayout) findViewById(R.id.devices_scoll_view);
@@ -44,16 +45,18 @@ public class MainActivity extends AppCompatActivity
         bluetoothMaster = new BluetoothMaster(this);
         if (bluetoothMaster.bluetoothSupported() == false)
         {
-            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
+            scanToggle.setText("Bluetooth unavailable");
+            scanToggle.setClickable(false);
+            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_LONG).show();
             return;
         }
-        if (bluetoothMaster.isEnabled() == false)
+        if (bluetoothMaster.isEnabled() == false) // what is this code for?
         {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             return;
         }
-        Toast.makeText(this, R.string.welcome_text, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.welcome_text, Toast.LENGTH_LONG).show();
 
         // SET CALLBACK FOR BLUEETOTH //
         bluetoothMaster.addChangeListener(new OnConnectionsChanged()
@@ -85,9 +88,9 @@ public class MainActivity extends AppCompatActivity
         scanToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
+            public void onCheckedChanged(CompoundButton compoundButton, boolean enable)
             {
-                scanDevice(isChecked);
+                bluetoothMaster.enable(enable);
             }
         });
     }
@@ -112,18 +115,6 @@ public class MainActivity extends AppCompatActivity
         ((TextView) view.findViewById(R.id.device_address)).setText(device.getDevice().getAddress());
         ((TextView) view.findViewById(R.id.device_rssi)).setText(String.valueOf(device.getRssi()));
         linearLayout.addView(view);
-    }
-
-    public void scanDevice(final boolean enable)
-    {
-        bluetoothMaster.enable(enable);
-        if (enable)
-        {
-            Log.d(TAG, "Scanning Started");
-        } else
-        {
-            Log.d(TAG, "Scanning Stopped");
-        }
     }
 
     @Override

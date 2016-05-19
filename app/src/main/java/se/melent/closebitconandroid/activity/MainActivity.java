@@ -5,20 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.List;
 
-import se.melent.closebitconandroid.bluetooth.RssiComparator;
+import se.melent.closebitconandroid.bluetooth.bci_sorters.RssiComparator;
 import se.melent.closebitconandroid.bluetooth.BluetoothMaster;
 import se.melent.closebitconandroid.R;
 import se.melent.closebitconandroid.bluetooth.BluetoothConnectionInfo;
@@ -83,7 +80,7 @@ public class MainActivity extends AppCompatActivity
                         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         synchronized (devices)
                         {
-                            Collections.sort(devices, new RssiComparator());
+                            Collections.sort(devices, new RssiComparator(true));
                             for (BluetoothConnectionInfo device : devices)
                             {
                                 createDeviceRow(inflater, device);

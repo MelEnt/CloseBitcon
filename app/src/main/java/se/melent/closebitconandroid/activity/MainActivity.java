@@ -17,7 +17,7 @@ import android.widget.Toast;
 import java.util.Collections;
 import java.util.List;
 
-import se.melent.closebitconandroid.RssiComparator;
+import se.melent.closebitconandroid.bluetooth.RssiComparator;
 import se.melent.closebitconandroid.bluetooth.BluetoothMaster;
 import se.melent.closebitconandroid.R;
 import se.melent.closebitconandroid.bluetooth.BluetoothConnectionInfo;
@@ -45,11 +45,13 @@ public class MainActivity extends AppCompatActivity
         if (bluetoothMaster.bluetoothSupported() == false)
         {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
+            return;
         }
         if (bluetoothMaster.isEnabled() == false)
         {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            return;
         }
         Toast.makeText(this, R.string.welcome_text, Toast.LENGTH_SHORT).show();
 

@@ -1,4 +1,4 @@
-package se.melent.closebitconandroid;
+package se.melent.closebitconandroid.bluetooth;
 
 import java.util.Comparator;
 

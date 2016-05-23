@@ -15,10 +15,10 @@
         <!--android:onClick="startScan"-->
         <!--android:layout_centerHorizontal="true"-->
         <!--android:layout_centerVertical="true"/>-->
-    <se.melent.closebitconandroid.bubbles.BubbleScreen
-        android:id="@+id/main_bubble_screen"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <!--<se.melent.closebitconandroid.bubbles.BubbleScreen-->
+        <!--android:id="@+id/main_bubble_screen"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"/>-->
 
         <Switch
             android:id="@+id/scanToggle"

@@ -14,3 +14,5 @@ public class BeaconFormActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
     }
 }
+
+

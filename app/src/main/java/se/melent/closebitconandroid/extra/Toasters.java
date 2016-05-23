@@ -17,35 +17,35 @@ public class Toasters
 		Toasters.context = context;
 	}
 
-	public static Toast show(String message)
+	public static void show(String message)
 	{
-		return advToast(message, Toast.LENGTH_LONG);
+		advToast(message, Toast.LENGTH_LONG);
 	}
 
-	public static Toast show(int stringID)
+	public static void show(int stringID)
 	{
-		return advToast(context.getString(stringID), Toast.LENGTH_LONG);
+		advToast(context.getString(stringID), Toast.LENGTH_LONG);
 	}
 
-	public static Toast showQuick(String message)
+	public static void showQuick(String message)
 	{
-		return advToast(message, Toast.LENGTH_SHORT);
+		advToast(message, Toast.LENGTH_SHORT);
 	}
 
-	public static Toast showQuick(int stringID)
+	public static void showQuick(int stringID)
 	{
-		return advToast(context.getString(stringID), Toast.LENGTH_SHORT);
+		advToast(context.getString(stringID), Toast.LENGTH_SHORT);
 	}
 
-	public static Toast advToast(String message, int toastLength)
+	public static void advToast(final String message, final int toastLength)
 	{
 		if (context == null)
 		{
 			throw new RuntimeException("Please use setContext to set context first");
 		}
-		final Toast toast = Toast.makeText(context, message, toastLength);
 		if (Looper.getMainLooper().getThread() == Thread.currentThread())
 		{
+			Toast toast = Toast.makeText(context, message, toastLength);
 			toast.show();
 		}
 		else
@@ -55,10 +55,10 @@ public class Toasters
 				@Override
 				public void run()
 				{
+					Toast toast = Toast.makeText(context, message, toastLength);
 					toast.show();
 				}
 			});
 		}
-		return toast;
 	}
 }

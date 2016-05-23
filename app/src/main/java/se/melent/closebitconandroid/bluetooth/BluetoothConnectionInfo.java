@@ -14,7 +14,7 @@ public class BluetoothConnectionInfo implements Parcelable
     private byte[] bytes;
     private String address;
 
-    private final int maxPing = 3;
+    private final int maxPing = 5;
     private int ping;
 
     public BluetoothConnectionInfo(BluetoothDevice device, int rssi, byte[] bytes)

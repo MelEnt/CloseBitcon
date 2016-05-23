@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         scanToggle = (Switch) findViewById(R.id.scanToggle);
         linearLayout = (LinearLayout) findViewById(R.id.devices_scoll_view);
-        bubbleScreen = (BubbleScreen) findViewById(R.id.main_bubble_screen);
+//        bubbleScreen = (BubbleScreen) findViewById(R.id.main_bubble_screen);
 
         AutoLog.introduce();
         Toasters.setContext(this);
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity
         }
         Toasters.show(R.string.welcome_text);
 
-        // SET CALLBACK FOR BLUEETOTH //
+        // SET CALLBACK FOR BLUETOOTH //
         bluetoothMaster.addChangeListener(new OnConnectionsChanged()
         {
             @Override
@@ -79,14 +80,15 @@ public class MainActivity extends AppCompatActivity
                     {
                         linearLayout.removeAllViews();
                         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        synchronized (devices)
+
+                        List<BluetoothConnectionInfo> mutableDeviceList = new ArrayList<>(devices);
+
+                        Collections.sort(mutableDeviceList, new RssiComparator(Order.ASCENDING));
+                        for (BluetoothConnectionInfo device : mutableDeviceList)
                         {
-                            Collections.sort(devices, new RssiComparator(Order.ASCENDING));
-                            for (BluetoothConnectionInfo device : devices)
-                            {
-                                createDeviceRow(inflater, device);
-                            }
+                            createDeviceRow(inflater, device);
                         }
+
                     }
                 });
             }
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                Intent intent = new Intent(MainActivity.this, BeaconFormActivity.class);
+                Intent intent = new Intent(MainActivity.this, AuthUserActivity.class);
                 intent.putExtra("BEACON", device);
                 startActivity(intent);
                 if (scanToggle.isChecked())
@@ -130,7 +132,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onResume();
         bluetoothMaster.togglePingService(true);
-        bubbleScreen.setUpdatingState(true);
+//        bubbleScreen.setUpdatingState(true);
     }
 
     @Override
@@ -138,6 +140,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onPause();
         bluetoothMaster.togglePingService(false);
-        bubbleScreen.setUpdatingState(false);
+//        bubbleScreen.setUpdatingState(false);
     }
 }

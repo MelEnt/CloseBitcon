@@ -177,7 +177,7 @@ public class BluetoothMaster
 		{
 			for (BluetoothConnectionInfo bci : devices)
 			{
-				if (bci.getAddress() == address)
+				if (bci.getAddress().equals(address))
 				{
 					return bci;
 				}
@@ -196,12 +196,12 @@ public class BluetoothMaster
 				{
 					AutoLog.info("Found new device: " + bci.getAddress());
 					devices.add(bci);
-					triggerListeners();
 				}
 				else
 				{
 					active_bci.ping(rssi, bytes);
 				}
+				triggerListeners();
 			}
 		}
 	}

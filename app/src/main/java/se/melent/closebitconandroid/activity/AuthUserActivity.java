@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,7 +15,6 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -62,9 +60,8 @@ public class AuthUserActivity extends AppCompatActivity {
     private PublicKey generatePublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException
     {
         X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(Base64.decode(publicKey, Base64.DEFAULT));
-        PublicKey pubKey = KeyFactory.getInstance("RSA").generatePublic(x509EncodedKeySpec);
 
-        return pubKey;
+        return KeyFactory.getInstance("RSA").generatePublic(x509EncodedKeySpec);
     }
 
     private void encodeRequest() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException
@@ -81,13 +78,13 @@ public class AuthUserActivity extends AppCompatActivity {
         insertArray(requestToken, saltBytes, 16);
 
         AutoLog.debug("AuthReq: " + Arrays.toString(requestToken));
-        AutoLog.debug("PublicKey: " + Arrays.toString(publicKey.getBytes()));
+        AutoLog.debug("PublicKey: " + publicKey);
 
         final Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, generatePublicKey(publicKey));
         finalKey = cipher.doFinal(requestToken);
 
-        final String cipherText = URLEncoder.encode(Base64.encodeToString(finalKey, Base64.DEFAULT), "UTF-8");
+        final String cipherText = Base64.encodeToString(finalKey, Base64.DEFAULT);
 
         AutoLog.debug("publicKey: " + publicKey);
         AutoLog.debug("KeyToSend: " + Arrays.toString(finalKey));
@@ -97,7 +94,7 @@ public class AuthUserActivity extends AppCompatActivity {
             public void run()
             {
                 Connection connection = Jsoup.connect("http://smartsensor.io/CBtest/auth_user.php");
-                connection.data("enc", cipherText);
+                connection.data("enc", cipherText); //Jsoup does automatic URLEncoding (utf-8) to connection.data values
                 AutoLog.debug("Final key to send as String: " + cipherText);
                 Document result = null;
                 try
@@ -106,8 +103,6 @@ public class AuthUserActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                AutoLog.debug(result.toString());
-
                 if(result.body().text().equals("ERROR"))
                 {
                     Toasters.show("Failed to auth user!");
@@ -115,6 +110,7 @@ public class AuthUserActivity extends AppCompatActivity {
                 }
 
                 String sha1Code = result.body().text().replace("=", "");
+                AutoLog.debug(sha1Code);
                 Intent intent = new Intent(AuthUserActivity.this, BeaconFormActivity.class);
                 intent.putExtra("SHA1", sha1Code);
                 startActivity(intent);
@@ -122,16 +118,6 @@ public class AuthUserActivity extends AppCompatActivity {
 
             }
         }).start();
-    }
-
-    private String concatByteArray(byte[] finalKey)
-    {
-        StringBuilder sb = new StringBuilder();
-        for(byte b : finalKey)
-        {
-            sb.append(b);
-        }
-        return sb.toString();
     }
 
     private void getPublicKey(final String url)

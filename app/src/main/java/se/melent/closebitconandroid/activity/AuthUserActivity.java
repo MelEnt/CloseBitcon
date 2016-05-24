@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,22 +16,19 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
-import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Random;
 
 import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import se.melent.closebitconandroid.R;
 import se.melent.closebitconandroid.extra.AutoLog;
+import se.melent.closebitconandroid.extra.EncodeUtils;
 import se.melent.closebitconandroid.extra.Toasters;
 
 public class AuthUserActivity extends AppCompatActivity {
@@ -57,35 +53,17 @@ public class AuthUserActivity extends AppCompatActivity {
         progress.show();
     }
 
-    private PublicKey generatePublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException
-    {
-        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(Base64.decode(publicKey, Base64.DEFAULT));
-
-        return KeyFactory.getInstance("RSA").generatePublic(x509EncodedKeySpec);
-    }
-
     private void encodeRequest() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException
     {
         String authCode = editText.getText().toString();
 
-        //byte[] requestToken     = new byte[20]; //final
         byte[] protocolBytes    = new byte[]{1, 0, 0, 0};
         byte[] authCodeBytes    = authCode.getBytes();
-        byte[] saltBytes        = randomBytes(4);
+        byte[] saltBytes        = EncodeUtils.randomBytes(4);
 
-        byte[] requestToken = concatArrays(protocolBytes, authCodeBytes, saltBytes);
-        //insertArray(requestToken, protocolBytes, 0);
-        //insertArray(requestToken, authCodeBytes, 4);
-        //insertArray(requestToken, saltBytes, 16);
+        byte[] requestToken = EncodeUtils.concatArrays(protocolBytes, authCodeBytes, saltBytes);
 
-        AutoLog.debug("AuthReq: " + Arrays.toString(requestToken));
-        AutoLog.debug("PublicKey: " + publicKey);
-
-        final Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, generatePublicKey(publicKey));
-        finalKey = cipher.doFinal(requestToken);
-
-        final String cipherText = Base64.encodeToString(finalKey, Base64.DEFAULT);
+        final String cipherText = EncodeUtils.encodeToString(requestToken, EncodeUtils.generatePublicKey(publicKey));
 
         AutoLog.debug("publicKey: " + publicKey);
         AutoLog.debug("KeyToSend: " + Arrays.toString(finalKey));
@@ -127,30 +105,20 @@ public class AuthUserActivity extends AppCompatActivity {
             @Override
             public void run()
             {
-                String key = null;
-                try
-                {
-                    Document doc = connectToPage(url);
-                    if(doc == null)
-                    {
-                        runOnUiThread(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                Toast.makeText(getApplicationContext(), "Cannot connect to " + url, Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        progress.dismiss();
-                        return;
-                    }
-                    key = doc.body().text();
-                    key = key.replace("-----BEGIN PUBLIC KEY----- ", "");
-                    key = key.replace(" -----END PUBLIC KEY-----", "");
+                String key = EncodeUtils.parsePublicKey(url);
 
-                } catch (IOException e)
+                if(key == null)
                 {
-                    e.printStackTrace();
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            Toast.makeText(getApplicationContext(), "Cannot connect to " + url, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    progress.dismiss();
+                    return;
                 }
                 publicKey = key;
                 progress.dismiss();
@@ -171,50 +139,6 @@ public class AuthUserActivity extends AppCompatActivity {
         } catch (InterruptedException e)
         {
             e.printStackTrace();
-        }
-    }
-
-    private byte[] randomBytes(int count)
-    {
-        Random random = new SecureRandom();
-        byte[] bytes = new byte[count];
-        random.nextBytes(bytes);
-
-        return bytes;
-    }
-
-    private Document connectToPage(String url) throws IOException
-    {
-        Connection.Response response = Jsoup.connect(url).execute();
-        if(response.statusCode() == 200)
-        {
-            return response.parse();
-        }
-        return null;
-    }
-
-	private byte[] concatArrays(byte[]... byteArrays)
-	{
-		int length = 0;
-		for (byte[] bytes : byteArrays)
-		{
-			length += length;
-		}
-		byte[] result = new byte[length];
-		int index = 0;
-		for (byte[] bytes : byteArrays)
-		{
-			insertArray(result,bytes,index);
-			index += bytes.length;
-		}
-		return result;
-	}
-
-    private void insertArray(byte[] bytes, byte[] src, int index)
-    {
-        for(int i=0;i<src.length-1;i++)
-        {
-            bytes[index+i] = src[i];
         }
     }
 

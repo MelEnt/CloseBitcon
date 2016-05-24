@@ -68,14 +68,15 @@ public class AuthUserActivity extends AppCompatActivity {
     {
         String authCode = editText.getText().toString();
 
-        byte[] requestToken     = new byte[20]; //final
+        //byte[] requestToken     = new byte[20]; //final
         byte[] protocolBytes    = new byte[]{1, 0, 0, 0};
         byte[] authCodeBytes    = authCode.getBytes();
         byte[] saltBytes        = randomBytes(4);
 
-        insertArray(requestToken, protocolBytes, 0);
-        insertArray(requestToken, authCodeBytes, 4);
-        insertArray(requestToken, saltBytes, 16);
+        byte[] requestToken = concatArrays(protocolBytes, authCodeBytes, saltBytes);
+        //insertArray(requestToken, protocolBytes, 0);
+        //insertArray(requestToken, authCodeBytes, 4);
+        //insertArray(requestToken, saltBytes, 16);
 
         AutoLog.debug("AuthReq: " + Arrays.toString(requestToken));
         AutoLog.debug("PublicKey: " + publicKey);
@@ -191,6 +192,23 @@ public class AuthUserActivity extends AppCompatActivity {
         }
         return null;
     }
+
+	private byte[] concatArrays(byte[]... byteArrays)
+	{
+		int length = 0;
+		for (byte[] bytes : byteArrays)
+		{
+			length += length;
+		}
+		byte[] result = new byte[length];
+		int index = 0;
+		for (byte[] bytes : byteArrays)
+		{
+			insertArray(result,bytes,index);
+			index += bytes.length;
+		}
+		return result;
+	}
 
     private void insertArray(byte[] bytes, byte[] src, int index)
     {

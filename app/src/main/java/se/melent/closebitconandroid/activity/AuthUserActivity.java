@@ -17,10 +17,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
-import java.util.Random;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -35,7 +33,6 @@ public class AuthUserActivity extends AppCompatActivity {
 
     private EditText editText;
     private String publicKey;
-    private byte[] finalKey;
     private ProgressDialog progress;
 
     @Override
@@ -47,8 +44,8 @@ public class AuthUserActivity extends AppCompatActivity {
 
     public void submit(View view) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
         progress = new ProgressDialog(this);
-        progress.setTitle("Loading");
-        progress.setMessage("Downloading public key...");
+        progress.setTitle(getString(R.string.dialog_downloading_key));
+        progress.setMessage(getString(R.string.dialog_downloading_key_specific));
         getPublicKey("http://smartsensor.io/CBtest/getpubkey.php");
         progress.show();
     }
@@ -66,7 +63,6 @@ public class AuthUserActivity extends AppCompatActivity {
         final String cipherText = EncodeUtils.encodeToString(requestToken, EncodeUtils.generatePublicKey(publicKey));
 
         AutoLog.debug("publicKey: " + publicKey);
-        AutoLog.debug("KeyToSend: " + Arrays.toString(finalKey));
 
         new Thread(new Runnable() {
             @Override
@@ -107,31 +103,29 @@ public class AuthUserActivity extends AppCompatActivity {
             {
                 String key = EncodeUtils.parsePublicKey(url);
 
-                if(key == null)
+                if (key == null)
                 {
                     runOnUiThread(new Runnable()
                     {
                         @Override
                         public void run()
                         {
-                            Toast.makeText(getApplicationContext(), "Cannot connect to " + url, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.cannot_connect) + " " + url, Toast.LENGTH_SHORT).show();
                         }
                     });
+                    publicKey = key;
                     progress.dismiss();
-                    return;
-                }
-                publicKey = key;
-                progress.dismiss();
-                try
-                {
-                    encodeRequest();
-                } catch (GeneralSecurityException | UnsupportedEncodingException e)
-                {
-                    throw new RuntimeException(e);
+                    try
+                    {
+                        encodeRequest();
+                    } catch (GeneralSecurityException | UnsupportedEncodingException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
-
         });
+
         thread.start();
         try
         {

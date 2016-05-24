@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         scanToggle = (Switch) findViewById(R.id.scanToggle);
         linearLayout = (LinearLayout) findViewById(R.id.devices_scoll_view);
-//        bubbleScreen = (BubbleScreen) findViewById(R.id.main_bubble_screen);
+        bubbleScreen = (BubbleScreen) findViewById(R.id.main_bubble_screen);
 
         AutoLog.introduce();
         Toasters.setContext(this);
@@ -54,18 +54,19 @@ public class MainActivity extends AppCompatActivity
         if (bluetoothMaster.bluetoothSupported() == false)
         {
             AutoLog.warn("This device does not support Bluetooth LE");
-            scanToggle.setText("Bluetooth unavailable");
+            scanToggle.setText(getString(R.string.bluetooth_unavailable));
             scanToggle.setClickable(false);
-            Toasters.show(R.string.ble_not_supported);
+            Toasters.show(R.string.toast_bluetooth_not_supported);
             return;
         }
-        if (bluetoothMaster.isEnabled() == false) // what is this code for?
+        if (bluetoothMaster.isEnabled() == false)
         {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             return;
         }
-        Toasters.show(R.string.welcome_text);
+
+        Toasters.show(R.string.toast_bluetooth_supported);
 
         // SET CALLBACK FOR BLUETOOTH //
         bluetoothMaster.addChangeListener(new OnConnectionsChanged()
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onResume();
         bluetoothMaster.togglePingService(true);
-//        bubbleScreen.setUpdatingState(true);
+        bubbleScreen.setUpdatingState(false); // BUBBLES turned off
     }
 
     @Override
@@ -140,6 +141,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onPause();
         bluetoothMaster.togglePingService(false);
-//        bubbleScreen.setUpdatingState(false);
+        bubbleScreen.setUpdatingState(false);
     }
 }

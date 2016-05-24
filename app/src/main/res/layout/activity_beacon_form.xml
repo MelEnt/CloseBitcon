@@ -16,12 +16,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/enter_auth_below"/>
+            android:text="@string/input_auth_string"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/first_input"
-            android:text="@string/main_beacon_authcode"
+            android:text="whnmoX2N2JSx"
             android:maxLength="12" />
     </LinearLayout>
     <LinearLayout
@@ -32,12 +31,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MAC-address:"/>
+            android:text="@string/input_mac_address"/>
         <EditText
             android:id="@+id/beaconform_mac_address_edit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_beacon_macaddress"/>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/beaconform_admin_nbrs"
@@ -48,21 +46,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Admin Key"/>
+            android:text="@string/input_admin_key"/>
         <EditText
             android:id="@+id/beaconform_admin_nbrs_adminkey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AnyNumber"/>
+            android:text="@string/hint_any_number"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mobile Key"/>
+            android:text="@string/input_mobile_key"/>
         <EditText
             android:id="@+id/beaconform_admin_nbrs_mobilekey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AnyNumber"/>
+            android:text="@string/hint_any_number"/>
 
     </LinearLayout>
     <LinearLayout
@@ -74,7 +72,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Beacon type"/>
+            android:text="@string/input_beacon_type"/>
         <EditText
             android:id="@+id/beaconform_type_edit"
             android:layout_width="match_parent"
@@ -91,21 +89,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Major"/>
+            android:text="@string/input_major"/>
         <EditText
             android:id="@+id/beaconform_majorminor_nbrs_major"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Any number"/>
+            android:text="@string/hint_any_number"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Minor"/>
+            android:text="@string/input_minor"/>
         <EditText
             android:id="@+id/beaconform_majorminor_nbrs_minor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Any number"/>
+            android:text="@string/hint_any_number"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/beaconform_proxUUID"
@@ -116,7 +114,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Proximity UUID"/>
+            android:text="@string/input_proximity_UUID"/>
         <EditText
             android:id="@+id/beaconform_proxUUID_edit"
             android:layout_width="match_parent"
@@ -129,7 +127,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:text="Send"
+            android:text="@string/send"
             android:onClick="submitForm"/>
     </LinearLayout>
 

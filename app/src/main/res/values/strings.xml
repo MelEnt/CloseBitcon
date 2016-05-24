@@ -1,10 +1,34 @@
 <resources>
-    <string name="app_name">CloseBitconAndroid</string>
-    <string name="ble_not_supported">Bluetooth LE not supported!</string>
-    <string name="welcome_text">Welcome you have BT enabled</string>
-    <string name="button_text">Start Scan</string>
-    <string name="first_input">First Input</string>
-    <string name="enter_auth_below">Auth String:</string>
-    <string name="main_beacon_authcode">whnmoX2N2JSx</string>
-    <string name="main_beacon_macaddress">device.getAddress</string>
+    <!-- global -->
+        <string name="app_name">CloseBitconAndroid</string>
+
+    <!-- bluetoooth -->
+        <string name="bluetooth_unavailable">Bluetooth unavailable</string>
+        <string name="toast_bluetooth_not_supported">Bluetooth LE not supported!</string>
+        <string name="toast_bluetooth_supported">Welcome you have Bluetooth enabled</string>
+
+    <!-- key related -->
+        <string name="dialog_downloading_key">Downloading...</string>
+        <string name="dialog_downloading_key_specific">Downloading public key...</string>
+        <string name="cannot_connect">Cannot connect to</string>
+
+    <!-- LAYOUTS -->
+        <!-- global layout strings -->
+            <string name="send">Send</string>
+
+        <!-- buttons/switches -->
+            <string name="button_text">Start Scan</string>
+
+        <!-- input texts -->
+            <string name="input_auth_string">Auth String:</string>
+            <string name="input_mac_address">Mac address:</string>
+            <string name="input_admin_key">Admin Key:</string>
+            <string name="input_mobile_key">Mobile key:</string>
+            <string name="input_beacon_type">Beacon type:</string>
+            <string name="input_minor">Minor:</string>
+            <string name="input_major">Major:</string>
+            <string name="input_proximity_UUID">Proximity UUID:</string>
+
+        <!-- input hints -->
+            <string name="hint_any_number">AnyNumber</string>
 </resources>

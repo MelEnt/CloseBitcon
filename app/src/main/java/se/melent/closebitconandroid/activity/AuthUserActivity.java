@@ -51,8 +51,8 @@ public class AuthUserActivity extends AppCompatActivity {
 
     public void submit(View view) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
         progress = new ProgressDialog(this);
-        progress.setTitle("Loading");
-        progress.setMessage("Downloading public key...");
+        progress.setTitle(getString(R.string.dialog_downloading_key));
+        progress.setMessage(getString(R.string.dialog_downloading_key_specific));
         getPublicKey("http://smartsensor.io/CBtest/getpubkey.php");
         progress.show();
     }
@@ -138,7 +138,7 @@ public class AuthUserActivity extends AppCompatActivity {
                             @Override
                             public void run()
                             {
-                                Toast.makeText(getApplicationContext(), "Cannot connect to " + url, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), getString(R.string.cannot_connect) + " " + url, Toast.LENGTH_SHORT).show();
                             }
                         });
                         progress.dismiss();

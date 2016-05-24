@@ -25,7 +25,7 @@
             android:id="@+id/scanToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_text"
+            android:text="@string/start_scan"
             android:textSize="24sp"
             android:layout_marginTop="24dp"
             android:layout_centerHorizontal="true"/>

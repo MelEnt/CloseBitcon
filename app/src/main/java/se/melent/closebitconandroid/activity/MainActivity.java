@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import se.melent.closebitconandroid.R;
 import se.melent.closebitconandroid.bluetooth.bci_sorters.Order;
 import se.melent.closebitconandroid.bluetooth.bci_sorters.RssiComparator;
 import se.melent.closebitconandroid.bluetooth.BluetoothMaster;
-import se.melent.closebitconandroid.R;
 import se.melent.closebitconandroid.bluetooth.BluetoothConnectionInfo;
 import se.melent.closebitconandroid.bluetooth.OnConnectionsChanged;
 import se.melent.closebitconandroid.bubbles.BubbleScreen;
@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         scanToggle = (Switch) findViewById(R.id.scanToggle);
         linearLayout = (LinearLayout) findViewById(R.id.devices_scoll_view);
@@ -101,6 +100,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean enable)
             {
+                scanToggle.setText(enable?getString(R.string.stop_scan):getString(R.string.start_scan));
                 bluetoothMaster.enable(enable);
             }
         });

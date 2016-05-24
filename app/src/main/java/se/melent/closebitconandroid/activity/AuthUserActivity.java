@@ -133,14 +133,9 @@ public class AuthUserActivity extends AppCompatActivity {
                     Document doc = connectToPage(url);
                     if(doc == null)
                     {
-                        runOnUiThread(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                Toast.makeText(getApplicationContext(), getString(R.string.cannot_connect) + " " + url, Toast.LENGTH_SHORT).show();
-                            }
-                        });
+
+                        Toasters.show(getString(R.string.cannot_connect) + " " + url);
+
                         progress.dismiss();
                         return;
                     }

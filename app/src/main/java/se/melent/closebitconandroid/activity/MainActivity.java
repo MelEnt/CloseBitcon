@@ -28,8 +28,8 @@ import se.melent.closebitconandroid.extra.Toasters;
 
 public class MainActivity extends AppCompatActivity
 {
+    public static final String CURRENT_DEVICE = "se.melent.closebitconandroid.CURRENT_DEVICE";
     private static final int REQUEST_ENABLE_BT = 1;
-    private static final String TAG = MainActivity.class.getSimpleName();
     private Switch scanToggle;
     private LinearLayout linearLayout;
     private BubbleScreen bubbleScreen;
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 Intent intent = new Intent(MainActivity.this, AuthUserActivity.class);
-                intent.putExtra("BEACON", device);
+                intent.putExtra(CURRENT_DEVICE, device);
                 startActivity(intent);
                 if (scanToggle.isChecked())
                 {

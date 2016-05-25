@@ -24,21 +24,27 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import se.melent.closebitconandroid.R;
+import se.melent.closebitconandroid.bluetooth.BluetoothConnectionInfo;
 import se.melent.closebitconandroid.extra.AutoLog;
 import se.melent.closebitconandroid.extra.EncodeUtils;
 import se.melent.closebitconandroid.extra.Toasters;
 
 public class AuthUserActivity extends AppCompatActivity {
 
+    private static final String SHA1_CODE = "se.melent.closebitconandroid.SHA1_CODE";
+    public static final String CURRENT_DEVICE_ADDRESS = "se.melent.closebitconandroid.CURRENT_DEVICE_ADDRESS";
     private EditText editText;
     private String publicKey;
     private ProgressDialog progress;
+    private BluetoothConnectionInfo currentDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_user);
         Toasters.setContext(this);
+        Intent intent = getIntent();
+        currentDevice = intent.getParcelableExtra(MainActivity.CURRENT_DEVICE);
     }
 
     public void submit(View view) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
@@ -84,9 +90,10 @@ public class AuthUserActivity extends AppCompatActivity {
                 }
 
                 String sha1Code = result.body().text().replace("=", "");
-                AutoLog.debug(sha1Code);
+                AutoLog.debug("Sha1Code: " + sha1Code);
                 Intent intent = new Intent(AuthUserActivity.this, BeaconFormActivity.class);
-                intent.putExtra("SHA1", sha1Code);
+                intent.putExtra(SHA1_CODE, sha1Code);
+                intent.putExtra(CURRENT_DEVICE_ADDRESS, currentDevice.getAddress());
                 startActivity(intent);
 
 
@@ -101,24 +108,25 @@ public class AuthUserActivity extends AppCompatActivity {
             public void run()
             {
                 String key = EncodeUtils.parsePublicKey(url);
-
+                AutoLog.info(key);
                 if (key == null)
                 {
                     Toasters.show(getString(R.string.cannot_connect) + " " + url);
-
-                    publicKey = key;
                     progress.dismiss();
-                    try
-                    {
-                        encodeRequest();
-                    } catch (GeneralSecurityException | UnsupportedEncodingException e)
-                    {
-                        throw new RuntimeException(e);
-                    }
+                    return;
+                }
+                publicKey = key;
+                progress.dismiss();
+                try
+                {
+                    encodeRequest();
+                } catch (GeneralSecurityException | UnsupportedEncodingException e)
+                {
+                    throw new RuntimeException(e);
                 }
             }
-        });
 
+        });
         thread.start();
         try
         {

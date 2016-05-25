@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.AuthUserActivity"></activity>
+        <activity android:name=".activity.BeaconFormActivity"></activity>
     </application>
 
 </manifest>

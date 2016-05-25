@@ -30,5 +30,5 @@
             <string name="input_proximity_UUID">Proximity UUID:</string>
 
         <!-- input hints -->
-            <string name="hint_any_number">AnyNumber</string>
+            <string name="hint_any_number">NA</string>
 </resources>

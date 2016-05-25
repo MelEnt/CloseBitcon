@@ -60,7 +60,6 @@ public class BubbleScreen extends View
 	{
 		super.onWindowFocusChanged(hasWindowFocus);
 		screenSize = new Rect(0,0,getWidth(),getHeight());
-		scheduleUpdateTimer();
 	}
 
 	public void setUpdatingState(boolean enable)

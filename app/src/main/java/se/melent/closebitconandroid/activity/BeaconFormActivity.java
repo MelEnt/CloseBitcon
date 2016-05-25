@@ -119,7 +119,6 @@ public class BeaconFormActivity extends AppCompatActivity
         if(requestToken.length == 83)
         {
             Toasters.show("VALID HOORRAAY");
-            AutoLog.debug(publicKey);
             connectToken = EncodeUtils.encodeToString(requestToken, EncodeUtils.generatePublicKey(publicKey));
             connect(connectToken);
         }
@@ -139,7 +138,7 @@ public class BeaconFormActivity extends AppCompatActivity
                 Connection connection = Jsoup.connect("http://smartsensor.io/CBtest/activate_beacon.php");
                 connection.data("enc", connectToken); //Jsoup does automatic URLEncoding (utf-8) to connection.data values
 
-                // LOG ENCODED VALUE (EVEN THO connection.data encodes value with URL encoding)
+                // LOG URL ENCODED VALUE (EVEN THO connection.data encodes value with URL encoding)
                 try
                 {
                     AutoLog.debug("ConnToken: " + URLEncoder.encode(connectToken, "UTF-8"));

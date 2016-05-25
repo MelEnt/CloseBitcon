@@ -72,24 +72,27 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void changed(final List<BluetoothConnectionInfo> devices)
             {
-                runOnUiThread(new Runnable()
+                if(scanToggle.isChecked())
                 {
-                    @Override
-                    public void run()
+                    runOnUiThread(new Runnable()
                     {
-                        linearLayout.removeAllViews();
-                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-                        List<BluetoothConnectionInfo> mutableDeviceList = new ArrayList<>(devices);
-
-                        Collections.sort(mutableDeviceList, new RssiComparator(Order.ASCENDING));
-                        for (BluetoothConnectionInfo device : mutableDeviceList)
+                        @Override
+                        public void run()
                         {
-                            createDeviceRow(inflater, device);
-                        }
+                            linearLayout.removeAllViews();
+                            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-                    }
-                });
+                            List<BluetoothConnectionInfo> mutableDeviceList = new ArrayList<>(devices);
+
+                            Collections.sort(mutableDeviceList, new RssiComparator(Order.ASCENDING));
+                            for (BluetoothConnectionInfo device : mutableDeviceList)
+                            {
+                                createDeviceRow(inflater, device);
+                            }
+
+                        }
+                    });
+                }
             }
         });
 

@@ -56,7 +56,7 @@ public class AuthUserActivity extends AppCompatActivity {
 
     private void encodeRequest() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException
     {
-        String authCode = editText.getText().toString();
+        final String authCode = editText.getText().toString();
 
         byte[] protocolBytes    = new byte[]{1, 0, 0, 0};
         byte[] authCodeBytes    = authCode.getBytes();
@@ -93,6 +93,7 @@ public class AuthUserActivity extends AppCompatActivity {
                 Intent intent = new Intent(AuthUserActivity.this, BeaconFormActivity.class);
                 intent.putExtra("SHA1", sha1Code);
                 intent.putExtra("BEACON", bluetoothConnectionInfo);
+                intent.putExtra("AUTHCODE", authCode);
                 startActivity(intent);
 
             }

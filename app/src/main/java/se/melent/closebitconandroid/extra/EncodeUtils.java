@@ -55,6 +55,40 @@ public class EncodeUtils
         return bytes;
     }
 
+    public static byte[] generateKeyBytes(String targetMacAddress, String extra)
+    {
+        String stringSeed   = targetMacAddress + extra;
+        byte[] byteSeed     = stringSeed.getBytes();
+        Random random       = new Random();
+        long seed           = 0;
+
+        for(byte b : byteSeed)
+        {
+            seed += b;
+            random.setSeed(seed);
+            seed = random.nextLong();
+        }
+
+        byte[] result = new byte[20];
+        random.nextBytes(result);
+
+        return result;
+    }
+
+    public static <E> String joinArray(String delimiter, E[] input)
+    {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<input.length; i++)
+        {
+            sb.append(input[i]);
+            if(i<input.length-1)
+            {
+                sb.append(delimiter);
+            }
+        }
+        return sb.toString();
+    }
+
     public static String parsePublicKey(String url)
     {
         String key = null;

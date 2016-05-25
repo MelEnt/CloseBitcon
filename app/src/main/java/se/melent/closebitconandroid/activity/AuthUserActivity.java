@@ -31,8 +31,7 @@ import se.melent.closebitconandroid.extra.Toasters;
 
 public class AuthUserActivity extends AppCompatActivity {
 
-    private static final String SHA1_CODE = "se.melent.closebitconandroid.SHA1_CODE";
-    public static final String CURRENT_DEVICE_ADDRESS = "se.melent.closebitconandroid.CURRENT_DEVICE_ADDRESS";
+    private BluetoothConnectionInfo bluetoothConnectionInfo;
     private EditText editText;
     private String publicKey;
     private ProgressDialog progress;
@@ -44,7 +43,7 @@ public class AuthUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_auth_user);
         Toasters.setContext(this);
         Intent intent = getIntent();
-        currentDevice = intent.getParcelableExtra(MainActivity.CURRENT_DEVICE);
+        bluetoothConnectionInfo = intent.getParcelableExtra("BEACON");
     }
 
     public void submit(View view) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
@@ -92,10 +91,9 @@ public class AuthUserActivity extends AppCompatActivity {
                 String sha1Code = result.body().text().replace("=", "");
                 AutoLog.debug("Sha1Code: " + sha1Code);
                 Intent intent = new Intent(AuthUserActivity.this, BeaconFormActivity.class);
-                intent.putExtra(SHA1_CODE, sha1Code);
-                intent.putExtra(CURRENT_DEVICE_ADDRESS, currentDevice.getAddress());
+                intent.putExtra("SHA1", sha1Code);
+                intent.putExtra("BEACON", bluetoothConnectionInfo);
                 startActivity(intent);
-
 
             }
         }).start();

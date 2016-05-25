@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import se.melent.closebitconandroid.R;
 import se.melent.closebitconandroid.bluetooth.bci_sorters.Order;
 import se.melent.closebitconandroid.bluetooth.bci_sorters.RssiComparator;
 import se.melent.closebitconandroid.bluetooth.BluetoothMaster;
-import se.melent.closebitconandroid.R;
 import se.melent.closebitconandroid.bluetooth.BluetoothConnectionInfo;
 import se.melent.closebitconandroid.bluetooth.OnConnectionsChanged;
 import se.melent.closebitconandroid.bubbles.BubbleScreen;
@@ -28,7 +28,6 @@ import se.melent.closebitconandroid.extra.Toasters;
 
 public class MainActivity extends AppCompatActivity
 {
-    public static final String CURRENT_DEVICE = "se.melent.closebitconandroid.CURRENT_DEVICE";
     private static final int REQUEST_ENABLE_BT = 1;
     private Switch scanToggle;
     private LinearLayout linearLayout;
@@ -40,7 +39,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         scanToggle = (Switch) findViewById(R.id.scanToggle);
         linearLayout = (LinearLayout) findViewById(R.id.devices_scoll_view);
@@ -101,6 +99,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean enable)
             {
+                scanToggle.setText(enable?getString(R.string.stop_scan):getString(R.string.start_scan));
                 bluetoothMaster.enable(enable);
             }
         });
@@ -115,7 +114,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 Intent intent = new Intent(MainActivity.this, AuthUserActivity.class);
-                intent.putExtra(CURRENT_DEVICE, device);
+                intent.putExtra("BEACON", device);
                 startActivity(intent);
                 if (scanToggle.isChecked())
                 {

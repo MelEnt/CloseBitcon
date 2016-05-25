@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.UUID;
 
 import se.melent.closebitconandroid.R;
+import se.melent.closebitconandroid.bluetooth.BluetoothConnectionInfo;
 
 /**
  * Created by MelEnt on 2016-05-18.
@@ -31,7 +32,11 @@ public class BeaconFormActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beacon_form);
+
         Intent intent = getIntent();
+        BluetoothConnectionInfo bluetoothConnectionInfo = intent.getParcelableExtra("BEACON");
+        String sha1Code = intent.getStringExtra("SHA1");
+        currentDeviceAddress = bluetoothConnectionInfo.getAddress();
 
         macAdress            = (EditText)findViewById(R.id.beaconform_mac_address_edit);
         adminKey             = (EditText)findViewById(R.id.beaconform_admin_nbrs_adminkey_edit);
@@ -41,10 +46,10 @@ public class BeaconFormActivity extends AppCompatActivity
         minorNumber          = (EditText)findViewById(R.id.beaconform_majorminor_nbrs_minor_edit);
         proxUUID             = (EditText)findViewById(R.id.beaconform_proxUUID_edit);
 
-        currentDeviceAddress = intent.getStringExtra(AuthUserActivity.CURRENT_DEVICE_ADDRESS);
         macAdress.setText(currentDeviceAddress, TextView.BufferType.EDITABLE);
 
         proxUUID.setText(generateUUID(currentDeviceAddress));
+
 
     }
 

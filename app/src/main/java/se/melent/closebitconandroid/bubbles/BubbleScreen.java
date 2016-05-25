@@ -62,6 +62,20 @@ public class BubbleScreen extends View
 		screenSize = new Rect(0,0,getWidth(),getHeight());
 	}
 
+	@Override
+	protected void onAttachedToWindow()
+	{
+		super.onAttachedToWindow();
+		setUpdatingState(true);
+	}
+
+	@Override
+	protected void onDetachedFromWindow()
+	{
+		super.onDetachedFromWindow();
+		setUpdatingState(false);
+	}
+
 	public void setUpdatingState(boolean enable)
 	{
 		timer.purge();

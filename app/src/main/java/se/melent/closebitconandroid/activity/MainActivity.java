@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_ENABLE_BT = 1;
     private Switch scanToggle;
     private LinearLayout linearLayout;
-    private BubbleScreen bubbleScreen;
+    //private BubbleScreen bubbleScreen;
     private TextView bitconCount;
     private BluetoothMaster bluetoothMaster;
 
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         scanToggle = (Switch) findViewById(R.id.scanToggle);
         linearLayout = (LinearLayout) findViewById(R.id.devices_scoll_view);
-        bubbleScreen = (BubbleScreen) findViewById(R.id.main_bubble_screen);
+        //bubbleScreen = (BubbleScreen) findViewById(R.id.main_bubble_screen);
         bitconCount = (TextView) findViewById(R.id.bitconCount);
 
         AutoLog.introduce();
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onResume();
         bluetoothMaster.togglePingService(true);
-        bubbleScreen.setUpdatingState(false); // BUBBLES turned off
+        //bubbleScreen.setUpdatingState(false); // BUBBLES turned off
     }
 
     @Override
@@ -145,6 +145,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onPause();
         bluetoothMaster.togglePingService(false);
-        bubbleScreen.setUpdatingState(false);
+        //bubbleScreen.setUpdatingState(false);
     }
 }

@@ -24,12 +24,14 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import se.melent.closebitconandroid.R;
+import se.melent.closebitconandroid.bluetooth.BluetoothConnectionInfo;
 import se.melent.closebitconandroid.extra.AutoLog;
 import se.melent.closebitconandroid.extra.EncodeUtils;
 import se.melent.closebitconandroid.extra.Toasters;
 
-public class AuthUserActivity extends AppCompatActivity {
-
+public class AuthUserActivity extends AppCompatActivity
+{
+    private BluetoothConnectionInfo bluetoothConnectionInfo;
     private EditText editText;
     private String publicKey;
     private ProgressDialog progress;
@@ -39,6 +41,9 @@ public class AuthUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_user);
         Toasters.setContext(this);
+
+        Intent intent = getIntent();
+        bluetoothConnectionInfo = intent.getParcelableExtra("BEACON");
     }
 
     public void submit(View view) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
@@ -87,6 +92,7 @@ public class AuthUserActivity extends AppCompatActivity {
                 AutoLog.debug(sha1Code);
                 Intent intent = new Intent(AuthUserActivity.this, BeaconFormActivity.class);
                 intent.putExtra("SHA1", sha1Code);
+                intent.putExtra("BEACON", bluetoothConnectionInfo);
                 startActivity(intent);
 
 

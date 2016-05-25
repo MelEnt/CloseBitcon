@@ -37,9 +37,19 @@ public class AutoLog
 		print(Log.INFO, message);
 	}
 
+	public static void info(String label, String message)
+	{
+		info(label+": "+message);
+	}
+
 	public static void debug(String message)
 	{
 		print(Log.DEBUG, message);
+	}
+
+	public static void debug(String label, String message)
+	{
+		debug(label+": "+message);
 	}
 
 	public static void error(String message)
@@ -47,9 +57,19 @@ public class AutoLog
 		print(Log.ERROR, message);
 	}
 
+	public static void error(String label, String message)
+	{
+		error(label+": "+message);
+	}
+
 	public static void warn(String message)
 	{
 		print(Log.WARN, message);
+	}
+
+	public static void warn(String label, String message)
+	{
+		warn(label+": "+message);
 	}
 
 	private static void print(int level, String message)
@@ -65,6 +85,7 @@ public class AutoLog
 		message = message.replace("(PACKAGE)",packageName);
 		message = message.replace("(CLASS)",className);
 		message = message.replace("(METHOD)",methodName);
+		message = message.replace("(LINE)",String.valueOf(ste.getLineNumber()));
 
 		String info = "("+getTimeElapsed()+" sec) " + fullName+" (Method: "+methodName+") Line: "+ste.getLineNumber();
 

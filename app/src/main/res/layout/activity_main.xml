@@ -34,7 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="24dp"
-            android:layout_below="@+id/scanToggle">
+            android:layout_below="@+id/scanToggle"
+            android:id="@+id/scrollView">
 
             <LinearLayout
                 android:id="@+id/devices_scoll_view"
@@ -44,4 +45,14 @@
 
             </LinearLayout>
         </ScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="0"
+        android:id="@+id/bitconCount"
+        android:layout_alignBaseline="@+id/scanToggle"
+        android:layout_alignBottom="@+id/scanToggle"
+        android:layout_alignEnd="@+id/scrollView" />
 </RelativeLayout>

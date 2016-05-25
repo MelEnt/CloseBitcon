@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity
     private Switch scanToggle;
     private LinearLayout linearLayout;
     private BubbleScreen bubbleScreen;
-
+    private TextView bitconCount;
     private BluetoothMaster bluetoothMaster;
 
     @Override
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
         scanToggle = (Switch) findViewById(R.id.scanToggle);
         linearLayout = (LinearLayout) findViewById(R.id.devices_scoll_view);
         bubbleScreen = (BubbleScreen) findViewById(R.id.main_bubble_screen);
+        bitconCount = (TextView) findViewById(R.id.bitconCount);
 
         AutoLog.introduce();
         Toasters.setContext(this);
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity
                         {
                             createDeviceRow(inflater, device);
                         }
+                        bitconCount.setText(mutableDeviceList.size());
 
                     }
                 });

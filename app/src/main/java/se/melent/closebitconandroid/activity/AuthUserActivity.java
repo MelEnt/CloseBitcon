@@ -94,6 +94,7 @@ public class AuthUserActivity extends AppCompatActivity {
                 intent.putExtra("SHA1", sha1Code);
                 intent.putExtra("BEACON", bluetoothConnectionInfo);
                 intent.putExtra("AUTHCODE", authCode);
+                intent.putExtra("PUBLIC_KEY", publicKey);
                 startActivity(intent);
 
             }

@@ -2,12 +2,14 @@ package se.melent.closebitconandroid.extra;
 
 import android.util.Base64;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -16,6 +18,7 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -55,10 +58,22 @@ public class EncodeUtils
         return bytes;
     }
 
-    public static byte[] generateKeyBytes(String targetMacAddress, String extra)
+
+    public static byte[] stringMacToBytes(String stringMacAddress)
     {
-        String stringSeed   = targetMacAddress + extra;
-        byte[] byteSeed     = stringSeed.getBytes();
+        String[] split = stringMacAddress.split(":");
+        byte[] bytes = new byte[split.length];
+        for(int i=0; i<bytes.length; i++)
+        {
+            Integer value = Integer.parseInt(split[i], 16);
+            bytes[i] = value.byteValue();
+        }
+        return bytes;
+    }
+
+    public static byte[] generateKeyBytes(String hash, int length)
+    {
+        byte[] byteSeed     = hash.getBytes();
         Random random       = new Random();
         long seed           = 0;
 
@@ -69,10 +84,21 @@ public class EncodeUtils
             seed = random.nextLong();
         }
 
-        byte[] result = new byte[20];
+        byte[] result = new byte[length];
         random.nextBytes(result);
 
         return result;
+    }
+
+    public static byte[] convertUUIDToByteArray(UUID uuid, int length)
+    {
+        AutoLog.debug("UUID BEFORE BYTEBUFFER: " + uuid.toString());
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[length]);
+        byteBuffer.putLong(uuid.getMostSignificantBits());
+        byteBuffer.putLong(uuid.getLeastSignificantBits());
+
+        AutoLog.debug("UUID AFTER: " + joinArray(",", ArrayUtils.toObject(byteBuffer.array())));
+        return byteBuffer.array();
     }
 
     public static <E> String joinArray(String delimiter, E[] input)

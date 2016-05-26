@@ -19,6 +19,7 @@ import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.Array;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -104,6 +105,7 @@ public class BeaconFormActivity extends AppCompatActivity
 
         AutoLog.debug("AdminKeyBytes: " + EncodeUtils.joinArray(",", ArrayUtils.toObject(adminKeyBytes)));
         AutoLog.debug("MobileKeyBytes: " + EncodeUtils.joinArray(",", ArrayUtils.toObject(mobileKeyBytes)));
+        AutoLog.debug("MacToBytes: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(macAddressBytes)));
 
         requestToken = EncodeUtils.concatArrays(
                 protocolVersion,

@@ -6,17 +6,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.BadPaddingException;
@@ -33,9 +37,9 @@ public class AuthUserActivity extends AppCompatActivity {
 
     private BluetoothConnectionInfo bluetoothConnectionInfo;
     private EditText editText;
-    private String publicKey;
+    private String stringPublicKey;
     private ProgressDialog progress;
-    private BluetoothConnectionInfo currentDevice;
+    private PublicKey publicKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,7 @@ public class AuthUserActivity extends AppCompatActivity {
 
     private void encodeRequest() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException
     {
+        publicKey = EncodeUtils.generatePublicKey(stringPublicKey);
         final String authCode = editText.getText().toString();
 
         byte[] protocolBytes    = new byte[]{1, 0, 0, 0};
@@ -64,9 +69,11 @@ public class AuthUserActivity extends AppCompatActivity {
 
         byte[] requestToken = EncodeUtils.concatArrays(protocolBytes, authCodeBytes, saltBytes);
 
-        final String cipherText = EncodeUtils.encodeToString(requestToken, EncodeUtils.generatePublicKey(publicKey));
+        final String cipherText = EncodeUtils.encodeToString(requestToken, publicKey);
 
-        AutoLog.debug("publicKey: " + publicKey);
+        AutoLog.debug("stringPublicKey: " + stringPublicKey);
+
+        controlServerResponse(requestToken);
 
         new Thread(new Runnable() {
             @Override
@@ -74,7 +81,13 @@ public class AuthUserActivity extends AppCompatActivity {
             {
                 Connection connection = Jsoup.connect("http://smartsensor.io/CBtest/auth_user.php");
                 connection.data("enc", cipherText); //Jsoup does automatic URLEncoding (utf-8) to connection.data values
-                AutoLog.debug("Final key to send as String: " + cipherText);
+                try
+                {
+                    AutoLog.debug("Final key to send as String: " + URLEncoder.encode(cipherText, "UTF-8"));
+                } catch (UnsupportedEncodingException e)
+                {
+                    e.printStackTrace();
+                }
                 Document result = null;
                 try
                 {
@@ -92,13 +105,41 @@ public class AuthUserActivity extends AppCompatActivity {
                 AutoLog.debug("Sha1Code: " + sha1Code);
                 Intent intent = new Intent(AuthUserActivity.this, BeaconFormActivity.class);
                 intent.putExtra("SHA1", sha1Code);
+                AutoLog.debug("ShaResponseInBytes: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(DigestUtils.sha(sha1Code))));
                 intent.putExtra("BEACON", bluetoothConnectionInfo);
                 intent.putExtra("AUTHCODE", authCode);
-                intent.putExtra("PUBLIC_KEY", publicKey);
+                intent.putExtra("PUBLIC_KEY", stringPublicKey);
                 startActivity(intent);
 
             }
         }).start();
+    }
+
+    private void controlServerResponse(byte[] requestToken) throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, UnsupportedEncodingException
+    {
+        byte[] okBytes = "OK".getBytes();
+        byte[] uknBytes = "UNKNOWN".getBytes();
+
+        byte[] requestTokenOk     = EncodeUtils.concatArrays(requestToken, okBytes);
+        byte[] requestTokenUnknown = EncodeUtils.concatArrays(requestToken, uknBytes);
+
+        AutoLog.debug("REQTOKENOK: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(requestTokenOk)));
+        AutoLog.debug("REQTOKENUNKNOWN: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(requestTokenUnknown)));
+
+        MessageDigest md = MessageDigest.getInstance("SHA-1");
+        byte[] hashOk = md.digest(requestTokenOk);
+        byte[] hashUnkn = md.digest(requestTokenUnknown);
+
+
+        AutoLog.debug("OK: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(hashOk)));
+        AutoLog.debug("UNKNOWN: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(hashUnkn)));
+
+        String stringHashOkEncoded      = EncodeUtils.encodeToString(hashOk, publicKey);
+        String stringHashUnknownEncoded = EncodeUtils.encodeToString(hashUnkn, publicKey);
+
+        AutoLog.debug("stringOKENCODED: " + URLEncoder.encode(stringHashOkEncoded, "UTF-8"));
+        AutoLog.debug("stringUNKNOWNENCODED: " + URLEncoder.encode(stringHashUnknownEncoded, "UTF-8"));
+
     }
 
     private void getPublicKey(final String url)
@@ -115,7 +156,7 @@ public class AuthUserActivity extends AppCompatActivity {
                     progress.dismiss();
                     return;
                 }
-                publicKey = key;
+                stringPublicKey = key;
                 progress.dismiss();
                 try
                 {

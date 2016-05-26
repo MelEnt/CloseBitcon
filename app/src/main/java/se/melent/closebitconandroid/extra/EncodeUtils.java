@@ -17,6 +17,7 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.sql.Array;
 import java.util.Random;
 import java.util.UUID;
 
@@ -32,7 +33,7 @@ public class EncodeUtils
 {
     private static byte[] finalKey;
 
-    public static String encodeToString(byte[] inputArray, PublicKey publicKey) throws NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException
+    public static String encodeToString(final byte[] inputArray, PublicKey publicKey) throws NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException
     {
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);

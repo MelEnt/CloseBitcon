@@ -134,9 +134,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
+        AutoLog.info("Press",String.valueOf(keyCode));
         if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN)
         {
-            MediaPlayer.create(this, R.raw.bubbles).start();
+            AutoLog.info("Play");
+            MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.bubbles);
+            mediaPlayer.start();
             return true;
         }
         return super.onKeyDown(keyCode, event);

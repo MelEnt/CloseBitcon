@@ -97,7 +97,7 @@ public class AuthUserActivity extends AppCompatActivity {
                 }
                 if(result.body().text().equals("ERROR"))
                 {
-                    Toasters.show("Failed to auth user!");
+                    Toasters.show(getString(R.string.auth_failed));
                     return;
                 }
 

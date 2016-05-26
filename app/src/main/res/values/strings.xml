@@ -11,6 +11,7 @@
         <string name="dialog_downloading_key">Downloading...</string>
         <string name="dialog_downloading_key_specific">Downloading public key...</string>
         <string name="cannot_connect">Cannot connect to</string>
+        <string name="auth_failed">Failed to auth user!</string>
 
     <!-- LAYOUTS -->
         <!-- global layout strings -->

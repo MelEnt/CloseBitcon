@@ -135,8 +135,7 @@ public class MainActivity extends AppCompatActivity
     {
         if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN)
         {
-            MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.bubbles);
-            mediaPlayer.start();
+            MediaPlayer.create(this, R.raw.bubbles).start();
             return true;
         }
         return super.onKeyDown(keyCode, event);

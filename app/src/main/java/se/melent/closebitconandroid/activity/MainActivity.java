@@ -89,8 +89,7 @@ public class MainActivity extends AppCompatActivity
                             {
                                 createDeviceRow(inflater, device);
                             }
-                            bitconCount.setText(mutableDeviceList.size());
-
+                            bitconCount.setText(String.valueOf(mutableDeviceList.size()));
                         }
                     });
                 }

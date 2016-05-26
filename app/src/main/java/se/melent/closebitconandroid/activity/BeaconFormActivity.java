@@ -4,13 +4,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.UUID;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import se.melent.closebitconandroid.R;
 import se.melent.closebitconandroid.bluetooth.BluetoothConnectionInfo;
@@ -33,6 +47,10 @@ public class BeaconFormActivity extends AppCompatActivity
     private BluetoothConnectionInfo btci;
     private byte[] requestToken;
     private String stringMacAddress;
+    private String authCode;
+    private String uuid;
+    private String publicKey;
+    private String connectToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -44,8 +62,9 @@ public class BeaconFormActivity extends AppCompatActivity
         Intent intent        = getIntent();
         btci                 = intent.getParcelableExtra("BEACON");
         String sha1Code      = intent.getStringExtra("SHA1");
-        String authCode      = intent.getStringExtra("AUTHCODE");
-        String uuid          = generateHashedUUID(btci.getAddress());
+        authCode             = intent.getStringExtra("AUTHCODE");
+        uuid                 = generateHashedUUID(btci.getAddress());
+        publicKey            = intent.getStringExtra("PUBLIC_KEY");
 
         macAddress           = (EditText)findViewById(R.id.beaconform_mac_address_edit);
         adminKey             = (EditText)findViewById(R.id.beaconform_admin_nbrs_adminkey_edit);
@@ -56,20 +75,35 @@ public class BeaconFormActivity extends AppCompatActivity
         proxUUID             = (EditText)findViewById(R.id.beaconform_proxUUID_edit);
 
         macAddress.setText(btci.getAddress(), TextView.BufferType.EDITABLE);
-        proxUUID.setText(generateHashedUUID(btci.getAddress()));
+        proxUUID.setText(uuid);
         stringMacAddress     = macAddress.getText().toString();
 
+    }
+
+    public void submitForm(View view) throws BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException
+    {
+        encodeRequest();
+    }
+
+    private String generateHashedUUID(String hash)
+    {
+        return UUID.nameUUIDFromBytes(hash.getBytes()).toString();
+    }
+
+    private void encodeRequest() throws InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchPaddingException
+    {
         byte[] protocolVersion = new byte[]{1,0,0,0};
         byte[] authCodeBytes   = authCode.getBytes();
-        byte[] macAddressBytes = convertMacAddressToByteArray(stringMacAddress);
-        byte[] adminKeyBytes   = EncodeUtils.generateKeyBytes(stringMacAddress, "ADMIN_KEY");
-        byte[] mobileKeyBytes  = EncodeUtils.generateKeyBytes(stringMacAddress, "MOBILE_KEY");
+        byte[] macAddressBytes = EncodeUtils.stringMacToBytes(stringMacAddress);
+        byte[] adminKeyBytes   = EncodeUtils.generateKeyBytes(stringMacAddress + "ADMIN_KEY", 20);
+        byte[] mobileKeyBytes  = EncodeUtils.generateKeyBytes(stringMacAddress + "MOBILE_KEY", 20);
         byte[] beaconTypeBytes = new byte[]{100};
         byte[] majorNbrBytes   = new byte[]{6,9};
         byte[] minorNbrBytes   = new byte[]{8,8};
-        byte[] uuidBytes       = uuid.getBytes();
+        byte[] proxUUIDBytes   = EncodeUtils.convertUUIDToByteArray(UUID.fromString(uuid), 16);
+
         AutoLog.debug("AdminKeyBytes: " + EncodeUtils.joinArray(",", ArrayUtils.toObject(adminKeyBytes)));
-        AutoLog.debug("MobileKeyBytes: " + TextUtils.join(",", ArrayUtils.toObject(mobileKeyBytes)));
+        AutoLog.debug("MobileKeyBytes: " + EncodeUtils.joinArray(",", ArrayUtils.toObject(mobileKeyBytes)));
 
         requestToken = EncodeUtils.concatArrays(
                 protocolVersion,
@@ -79,40 +113,51 @@ public class BeaconFormActivity extends AppCompatActivity
                 mobileKeyBytes,
                 beaconTypeBytes,
                 majorNbrBytes,
-                minorNbrBytes);
+                minorNbrBytes,
+                proxUUIDBytes);
 
         if(requestToken.length == 83)
         {
             Toasters.show("VALID HOORRAAY");
+            connectToken = EncodeUtils.encodeToString(requestToken, EncodeUtils.generatePublicKey(publicKey));
+            connect(connectToken);
         }
         else
         {
             Toasters.show("Invalid length of requestToken. Current: " +requestToken.length);
         }
+    }//encodeReq
 
-
-
-
-    }
-
-    private String generateHashedUUID(String hash)
+    private void connect(final String connectToken)
     {
-        return UUID.nameUUIDFromBytes(hash.getBytes()).toString();
-    }
-
-    private byte[] convertMacAddressToByteArray(String macAddress)
-    {
-        String[] macAddressArray = macAddress.split(":");
-
-        byte[] macAddressAsByteArray = new byte[6];
-
-        for(int i = 0; i < macAddressArray.length; i++)
+        new Thread(new Runnable()
         {
-            macAddressAsByteArray[i] = Integer.decode("0x" + macAddressArray[i]).byteValue();
-        }
+            @Override
+            public void run()
+            {
+                Connection connection = Jsoup.connect("http://smartsensor.io/CBtest/activate_beacon.php");
+                connection.data("enc", connectToken); //Jsoup does automatic URLEncoding (utf-8) to connection.data values
 
-        return macAddressAsByteArray;
+                // LOG URL ENCODED VALUE (EVEN THO connection.data encodes value with URL encoding)
+                try
+                {
+                    AutoLog.debug("ConnToken: " + URLEncoder.encode(connectToken, "UTF-8"));
+                } catch (UnsupportedEncodingException e)
+                {
+                    e.printStackTrace();
+                }
+                Document result = null;
+                try
+                {
+                    result = connection.get();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                AutoLog.debug(result.body().toString());
+            }
+        }).start();
+
     }
-}
+}//class
 
 

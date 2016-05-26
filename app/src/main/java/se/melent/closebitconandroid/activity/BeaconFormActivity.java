@@ -137,7 +137,7 @@ public class BeaconFormActivity extends AppCompatActivity
             @Override
             public void run()
             {
-                Connection connection = Jsoup.connect("http://smartsensor.io/CBtest/activate_beacon.php");
+                Connection connection = Jsoup.connect("http://smartsensor.io/CBtest/auth_user.php");
                 connection.data("enc", connectToken); //Jsoup does automatic URLEncoding (utf-8) to connection.data values
 
                 // LOG URL ENCODED VALUE (EVEN THO connection.data encodes value with URL encoding)

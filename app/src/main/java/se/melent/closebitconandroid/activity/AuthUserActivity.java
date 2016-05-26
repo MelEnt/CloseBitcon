@@ -137,8 +137,8 @@ public class AuthUserActivity extends AppCompatActivity {
         String stringHashOkEncoded      = EncodeUtils.encodeToString(hashOk, publicKey);
         String stringHashUnknownEncoded = EncodeUtils.encodeToString(hashUnkn, publicKey);
 
-        AutoLog.debug("stringOKENCODED: " + URLEncoder.encode(stringHashOkEncoded, "UTF-8"));
-        AutoLog.debug("stringUNKNOWNENCODED: " + URLEncoder.encode(stringHashUnknownEncoded, "UTF-8"));
+        AutoLog.debug("stringOKENCODE: " + URLEncoder.encode(stringHashOkEncoded, "UTF-8"));
+        AutoLog.debug("stringUNKNOWNENCODE: " + URLEncoder.encode(stringHashUnknownEncoded, "UTF-8"));
 
     }
 

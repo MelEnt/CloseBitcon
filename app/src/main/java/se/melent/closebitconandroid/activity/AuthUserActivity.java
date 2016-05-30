@@ -73,7 +73,7 @@ public class AuthUserActivity extends AppCompatActivity {
 
         AutoLog.debug("stringPublicKey: " + stringPublicKey);
 
-        controlServerResponse(requestToken);
+//        controlServerResponse(requestToken);
 
         new Thread(new Runnable() {
             @Override
@@ -105,7 +105,6 @@ public class AuthUserActivity extends AppCompatActivity {
                 AutoLog.debug("Sha1Code: " + sha1Code);
                 Intent intent = new Intent(AuthUserActivity.this, BeaconFormActivity.class);
                 intent.putExtra("SHA1", sha1Code);
-                AutoLog.debug("ShaResponseInBytes: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(DigestUtils.sha(sha1Code))));
                 intent.putExtra("BEACON", bluetoothConnectionInfo);
                 intent.putExtra("AUTHCODE", authCode);
                 intent.putExtra("PUBLIC_KEY", stringPublicKey);
@@ -115,32 +114,32 @@ public class AuthUserActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void controlServerResponse(byte[] requestToken) throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, UnsupportedEncodingException
-    {
-        byte[] okBytes = "OK".getBytes();
-        byte[] uknBytes = "UNKNOWN".getBytes();
-
-        byte[] requestTokenOk     = EncodeUtils.concatArrays(requestToken, okBytes);
-        byte[] requestTokenUnknown = EncodeUtils.concatArrays(requestToken, uknBytes);
-
-        AutoLog.debug("REQTOKENOK: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(requestTokenOk)));
-        AutoLog.debug("REQTOKENUNKNOWN: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(requestTokenUnknown)));
-
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
-        byte[] hashOk = md.digest(requestTokenOk);
-        byte[] hashUnkn = md.digest(requestTokenUnknown);
-
-
-        AutoLog.debug("OK: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(hashOk)));
-        AutoLog.debug("UNKNOWN: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(hashUnkn)));
-
-        String stringHashOkEncoded      = EncodeUtils.encodeToString(hashOk, publicKey);
-        String stringHashUnknownEncoded = EncodeUtils.encodeToString(hashUnkn, publicKey);
-
-        AutoLog.debug("stringOKENCODE: " + URLEncoder.encode(stringHashOkEncoded, "UTF-8"));
-        AutoLog.debug("stringUNKNOWNENCODE: " + URLEncoder.encode(stringHashUnknownEncoded, "UTF-8"));
-
-    }
+//    private void controlServerResponse(byte[] requestToken) throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, UnsupportedEncodingException
+//    {
+//        byte[] okBytes = "OK".getBytes();
+//        byte[] uknBytes = "UNKNOWN".getBytes();
+//
+//        byte[] requestTokenOk     = EncodeUtils.concatArrays(requestToken, okBytes);
+//        byte[] requestTokenUnknown = EncodeUtils.concatArrays(requestToken, uknBytes);
+//
+//        AutoLog.debug("REQTOKENOK: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(requestTokenOk)));
+//        AutoLog.debug("REQTOKENUNKNOWN: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(requestTokenUnknown)));
+//
+//        MessageDigest md = MessageDigest.getInstance("SHA-1");
+//        byte[] hashOk = md.digest(requestTokenOk);
+//        byte[] hashUnkn = md.digest(requestTokenUnknown);
+//
+//
+//        AutoLog.debug("OK: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(hashOk)));
+//        AutoLog.debug("UNKNOWN: " + EncodeUtils.joinArray(", ", ArrayUtils.toObject(hashUnkn)));
+//
+//        String stringHashOkEncoded      = EncodeUtils.encodeToString(hashOk, publicKey);
+//        String stringHashUnknownEncoded = EncodeUtils.encodeToString(hashUnkn, publicKey);
+//
+//        AutoLog.debug("stringOKENCODE: " + URLEncoder.encode(stringHashOkEncoded, "UTF-8"));
+//        AutoLog.debug("stringUNKNOWNENCODE: " + URLEncoder.encode(stringHashUnknownEncoded, "UTF-8"));
+//
+//    }
 
     private void getPublicKey(final String url)
     {

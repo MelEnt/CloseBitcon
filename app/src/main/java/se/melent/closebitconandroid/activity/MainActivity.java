@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean enable)
             {
-                scanToggle.setText(enable?getString(R.string.stop_scan):getString(R.string.start_scan));
+                scanToggle.setText(enable ? getString(R.string.stop_scan):getString(R.string.start_scan));
                 bluetoothMaster.enable(enable);
             }
         });

@@ -1,7 +1,7 @@
 package se.melent.closebitconandroid;
 
 import android.util.Log;
-
+ 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 
